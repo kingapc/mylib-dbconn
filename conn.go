@@ -1,4 +1,4 @@
-package conn
+package connection
 
 import (
 	"database/sql"
@@ -15,13 +15,26 @@ const (
 	dbname   = "library"
 )
 
-func getConnection() (*sql.DB, error) {
+func getConnection() (*sql.DB, bool) {
 
+	var response bool
 	psCredentials := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	db, err := sql.Open("postgres", psCredentials)
 
-	return db, err
+	if err == nil {
+		defer db.Close()
+		err = db.Ping()
+		if err == nil {
+			response = false
+		} else {
+			response = true
+		}
+	} else {
+		response = true
+	}
+
+	return db, response
 }
 
 /*
@@ -29,16 +42,11 @@ func main() {
 
 	db, err := getConnection()
 
-	if err != nil {
-		panic(err)
+	if err {
+		fmt.Printf("\nUnable to connect to the data base!")
+	} else {
+		fmt.Printf("\nSuccessfully connected to database!")
+		fmt.Print(db)
 	}
-	defer db.Close()
-
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("\nSuccessfully connected to database!")
 }
 */
