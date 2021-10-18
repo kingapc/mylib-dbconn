@@ -15,7 +15,7 @@ const (
 	dbname   = "library"
 )
 
-func getConnection() (*sql.DB, bool) {
+func GetConnection() (*sql.DB, bool) {
 
 	var response bool
 	psCredentials := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
