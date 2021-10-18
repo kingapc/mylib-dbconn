@@ -23,7 +23,6 @@ func GetConnection() (*sql.DB, bool) {
 	db, err := sql.Open("postgres", psCredentials)
 
 	if err == nil {
-		defer db.Close()
 		err = db.Ping()
 		if err == nil {
 			response = false
