@@ -15,25 +15,22 @@ const (
 	dbname   = "library"
 )
 
-func GetConnection() (*sql.DB, bool) {
+func GetConnection() (*sql.DB, error) {
 
-	var response bool
 	psCredentials := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	db, err := sql.Open("postgres", psCredentials)
 
 	if err == nil {
 		err = db.Ping()
-		if err == nil {
-			response = false
+		if err != nil {
+			return nil, err
 		} else {
-			response = true
+			return db, nil
 		}
 	} else {
-		response = true
+		return nil, err
 	}
-
-	return db, response
 }
 
 /*
